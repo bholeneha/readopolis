@@ -6,7 +6,37 @@ interface Question {
     question: string;
     choices: {text: string; isCorrect: boolean}[];
     selectedAnswer: string | null;
-  }
+}
+
+interface Choice {
+  text: string;
+  isCorrect: boolean;
+}
+
+const generateQuestionsArray = (questionsString: string): Question[] => {
+  return questionsString.split("\n\n").map((questionString) => {
+    const lines = questionString.trim().split("\n");
+    const question = lines[0].substring(lines[0].indexOf(" ") + 1);
+    let choices: Choice[] = lines.slice(1, -1).map((choice) => {
+      const text = choice.trim().substring(2);
+      return {
+        text: text,
+        isCorrect: false,
+      };
+    });
+
+    const answer = lines[lines.length - 1].substring(
+      lines[lines.length - 1].lastIndexOf(" ") + 1
+    );
+    const answerLegend: { [key: string]: number } = { "A": 0, "B": 1, "C": 2, "D": 3, "E": 4 };
+    choices[answerLegend[answer]].isCorrect = true;
+    return {
+      question,
+      choices,
+      selectedAnswer: null,
+    };
+  });
+};
 
 const Home: React.FC = () => {
     const [title, setTitle] = useState('');
@@ -42,38 +72,42 @@ const Home: React.FC = () => {
             
             const questionsString = data.substring(questionsIndex).replace("Questions:", "").trim();
             setQuestionsString(questionsString);
+
+            const generatedQuestionsArray = generateQuestionsArray(questionsString);
+            setQuestions(generatedQuestionsArray);
+            console.log(questions)
+
         } catch (error) {
-        console.error('Error generating story:', error);
+            console.error('Error generating story:', error);
         }
 
     setIsLoading(false);
   };
 
-  console.log(questionsString);
 
-    const questionsArray: Question[] = questionsString.split("\n\n").map((questionString) => {
-        const lines = questionString.trim().split("\n");
-        const question = lines[0].substring(lines[0].indexOf(" ") + 1);
-        let choices = lines.slice(1, -1).map((choice) => {
-            const text = choice.trim().substring(2)
-            return {
-                text: text,
-                isCorrect: false
-            }
-        });
-        const answer = lines[lines.length - 1].substring(lines[lines.length - 1].lastIndexOf(" ") + 1);
-        // console.log("answer" + answer);
-        const answerLegend: {[key: string]: number} = { "A": 0, "B": 1, "C":2, "D": 3};
-        // console.log(choices, answer)
-        choices[answerLegend[answer]].isCorrect = true;
-        return {
-            question,
-            choices,
-            selectedAnswer: null, 
-        };
-    });
 
-    console.log(questionsArray);
+//   const questionsArray: Question[] = questionsString.split("\n\n").map((questionString) => {
+//     const lines = questionString.trim().split("\n");
+//     const question = lines[0].substring(lines[0].indexOf(" ") + 1);
+//     let choices: Choice[] = lines.slice(1, -1).map((choice) => {
+//         const text = choice.trim().substring(2)
+//         return {
+//             text: text,
+//             isCorrect: false
+//         }
+//     });
+
+//     const answer = lines[lines.length - 1].substring(lines[lines.length - 1].lastIndexOf(" ") + 1);
+//     const answerLegend: {[key: string]: number} = { "A": 0, "B": 1, "C":2, "D": 3};
+//     choices[answerLegend[answer]].isCorrect = true;
+//     return {
+//         question,
+//         choices,
+//         selectedAnswer: null, 
+//     };
+// });
+
+// setQuestions(questionsArray);
 
 //   const handleAnswerChange = (index: number, value: string) => {
 //     const newAnswers = [...answers];
@@ -99,7 +133,6 @@ const Home: React.FC = () => {
       </button>
       {title && <h2>{title}</h2>}
       {story && <StoryCard story={story} />}
-      {questionsString && <p>{questionsString}</p>}
       {questions?.length > 0 && 
         <QuestionsList 
             questions={questions} 
