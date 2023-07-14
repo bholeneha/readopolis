@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from '../styles/page.module.scss';
 import StoryCard from '../components/StoryCard';
 import QuestionsList from '../components/QuestionsList';
 
@@ -126,10 +127,10 @@ const Home: React.FC = () => {
 //   };
 
   return (
-    <div>
+    <div className={styles.main}>
       <h1>Welcome to the Readopolis!</h1>
       <button onClick={generateStory} disabled={isLoading}>
-        {isLoading ? 'Generating...' : 'Generate Story'}
+        {isLoading ? 'GENERATING...' : 'GENERATE STORY'}
       </button>
       {title && <h2>{title}</h2>}
       {story && <StoryCard story={story} />}
@@ -143,7 +144,7 @@ const Home: React.FC = () => {
         <div>
           <button 
             // onClick={checkAnswers}
-          >Check Answers</button>
+          >CHECK ANSWERS</button>
         </div>
       )}
     </div>

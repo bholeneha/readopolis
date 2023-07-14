@@ -11,7 +11,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, choices }) => {
     console.log(choices);
 
     return (
-        <div>
+        <div className='question'>
             <p>{question}</p>
             <ul>
                 {choices.map((choice, index) => (

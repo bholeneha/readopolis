@@ -1,6 +1,7 @@
 import React from 'react';
 import QuestionCard from './QuestionCard';
 
+
 interface QuestionsListProps {
     questions: { 
         question: string; 
@@ -13,7 +14,7 @@ const QuestionsList: React.FC<QuestionsListProps> = ({ questions }) => {
     console.log(questions);
 
     return (
-        <div>
+        <div className='questions'>
         <h2>Questions:</h2>
         {questions.map((question, index) => (
             <QuestionCard
